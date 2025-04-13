@@ -1,0 +1,30 @@
+name: Build and Run CloudSim Simulation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Compile AWS_Lambda_Simulation.java with JAR dependencies
+        run: |
+          mkdir -p out
+          javac -cp "lib/*" -d out src/cloudsim/simulations/AWS_Lambda_Simulation.java
+
+      - name: Run AWS_Lambda_Simulation
+        run: |
+          java -cp "out:lib/*" cloudsim.simulations.AWS_Lambda_Simulation
